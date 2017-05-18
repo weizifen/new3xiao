@@ -23,12 +23,13 @@ cc.Class({
     onLoad: function () {
 
     },
+
     initWithCellModel(model){
       this.model=model;
       var x=model.position.StartX;
       var y=model.position.StartY;
-      this.node.x=CELL_WIDTH*x;
-      this.node.y=CELL_HEIGHT*y;
+      this.node.x=CELL_WIDTH*(x - 0.5);
+      this.node.y=CELL_HEIGHT*(y-0.5);
       this.node.getComponent(cc.Animation).stop();
       
 

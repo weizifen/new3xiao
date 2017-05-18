@@ -28,6 +28,10 @@ cc.Class({
         gridScript.initWithCellModels(this.gridModel.getCells());
         
     },
+    selectCell(pos){
+        return this.gridModel.selectCell(pos);
+    }
+    
 
     // called every frame, uncomment this function to activate update callback
     // update: function (dt) {

@@ -20,8 +20,34 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-
+        // 监听事件
+        this.setListen();
     },
+    setListen(){
+        var self=this;
+        // 点击交换
+        this.node.on("touchstart",function(e){
+           var getLocation=e.getLocation();
+           var cellPositon=self.convertToGridValiditySpace(getLocation);
+        })
+    },
+    //判断点击位置是否在范围内
+    convertToGridValiditySpace(location){
+        console.log(location);
+        var pos=this.node.convertToNodeSpace(location);
+        if((pos.x<0||pos>Grid_PIXEL_WIDTH)&&(pos.y<0||pos.y>Grid_PIXEL_HEIGHT)){
+            return false;
+        }
+        
+        var x= Math.floor(pos.x/CELL_WIDTH)+1;
+        var y=Math.floor(pos.y/CELL_HEIGHT)+1;
+        return cc.p(x,y);
+    },
+
+
+
+
+
     setController(controller){
         this.controller=controller;
     },
@@ -31,7 +57,7 @@ cc.Class({
             this.cellViews[i] = [];
             for(let j=1;j<=9;j++){
                 var type=cellsModels[i][j].type;
-                console.log(type);
+                // console.log(type);
                 var cell=cc.instantiate(this.animalPrefab[type]);
                 cell.parent=this.node;
                 var cellScript=cell.getComponent("CellView");
