@@ -30,6 +30,9 @@ cc.Class({
     },
     selectCell(pos){
         return this.gridModel.selectCell(pos);
+    },
+    cleanCmd(){
+        return this.gridModel.cleanCmd();
     }
     
 

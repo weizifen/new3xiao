@@ -1,27 +1,83 @@
 export default class CellModel{
     constructor(){
         this.type=null;
-        this.status=CELL_STATUS.NORMAL;
-        this.position={
-            x:1,
-            y:1,
-            StartX:1,
-            StartY:1,
-        };
+        this.status=CELL_STATUS.COMMON;
+
+        this.x=1,
+        this.y=1,
+        this.StartX=1,
+        this.StartY=1,
+
+        this.cmd=[];
+        this.isDeath=false;
+
     }
     init(type){
         this.type = type;
     }
+    toDie(playTime){
+        this.cmd.push({
+        action: "toDie",
+        playTime: playTime,
+        keepTime: ANITIME.DIE
+        });
+        this.isDeath = true;
+    }
+
   
+    setStatus(status){
+        this.status=status;
+    }
     setXY(x,y){
-        this.position.x=x;
-        this.position.y=y;
+        this.x=x;
+        this.y=y;
 
     }
     setStartXY(x,y){
-        this.position.StartX=x;
-        this.position.StartY=y;
+        this.StartX=x;
+        this.StartY=y;
     }
+    moveToAndBack(pos){
+        var srcPos = cc.p(this.x,this.y);
+        this.cmd.push({
+            action: "moveTo",
+            keepTime: ANITIME.TOUCH_MOVE,
+            playTime: 0,
+            pos: pos
+        });
+        this.cmd.push({
+            action: "moveTo",
+            keepTime: ANITIME.TOUCH_MOVE,
+            playTime: ANITIME.TOUCH_MOVE,
+            pos: srcPos
+        });
+
+    }
+    moveTo(pos, playTime){
+         // 初始位置
+        var srcPos = cc.p(this.x,this.y);
+        this.cmd.push({
+            action: "moveTo",
+            keepTime: ANITIME.TOUCH_MOVE,
+            playTime: playTime,
+            pos: pos
+        });
+        this.x = pos.x;
+        this.y = pos.y; 
+    }
+    toShake(playTime){
+        this.cmd.push({
+        action: "toShake",
+        playTime: playTime,
+        keepTime: ANITIME.DIE_SHAKE
+    }); 
+}
+
+    
+    // 4消 wrap
+    
+    
+
 
 
 
