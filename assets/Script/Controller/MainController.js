@@ -33,6 +33,9 @@ cc.Class({
     },
     cleanCmd(){
         return this.gridModel.cleanCmd();
+    },
+    getScore(){
+        return this.gridModel.getScore();
     }
     
 

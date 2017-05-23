@@ -32,7 +32,11 @@ cc.Class({
       var y=model.StartY;
       this.node.x=CELL_WIDTH*(x - 0.5);
       this.node.y=CELL_HEIGHT*(y-0.5);
-      this.node.getComponent(cc.Animation).stop();
+      if(model.status==CELL_STATUS.COMMON){
+        this.node.getComponent(cc.Animation).stop();
+      }else{
+        this.node.getComponent(cc.Animation).play(model.status);
+      }
       
 
     },

@@ -70,8 +70,16 @@ export default class CellModel{
         action: "toShake",
         playTime: playTime,
         keepTime: ANITIME.DIE_SHAKE
-    }); 
-}
+        }); 
+    }
+    setVisible(playTime, isVisible){
+        this.cmd.push({
+        action: "setVisible",
+        playTime: playTime,
+        keepTime: 0,
+        isVisible: isVisible
+        });
+    }        
 
     
     // 4消 wrap

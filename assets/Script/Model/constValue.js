@@ -38,4 +38,13 @@ global.ANITIME = {
     BOMB_BIRD_DELAY: 0.7,
     DIE_SHAKE: 0.4 // 死前抖动
 }
-
+global.CELL_TYPE = {
+    EMPTY : 0,
+    A : 1,
+    B : 2,
+    C : 3,
+    D : 4,
+    E : 5,
+    F : 6,
+    BIRD : 7
+}

@@ -15,7 +15,12 @@ cc.Class({
         animalPrefab:{
             default:[],
             type:cc.Prefab,
-        }
+        },
+        score:{
+            default:null,
+            type:cc.Label,
+        },
+        _scoreC:0,
     },
 
     // use this for initialization
@@ -35,13 +40,15 @@ cc.Class({
                 var type=cellsModels[i][j].type;
                 // console.log(type);
                 var cell=cc.instantiate(this.animalPrefab[type]);
-                cell.parent=this.node;
+                // cell.parent=this.node;
+                this.node.addChild(cell);
                 var cellScript=cell.getComponent("CellView");
                 cellScript.initWithCellModel(cellsModels[i][j]);
                 this.cellViews[i][j]=cell;
 
             }
         }
+        // this.score.string=this.controller.getScore();
     },
     setListen(){
         var self=this;
@@ -81,10 +88,10 @@ cc.Class({
     },
     selectCell(cellPositon){
            var result =this.controller.selectCell(cellPositon); 
-           console.log(result)
+        //    console.log(result)
            var changeModels = result[0];
            var effectsQueue = result[1];
-           console.log(changeModels.length)
+        //    console.log(changeModels.length)
            this.updateView(changeModels);
            this.controller.cleanCmd();
             if(changeModels.length >= 2){
@@ -100,17 +107,22 @@ cc.Class({
     },
     updateView(changeModels){
         let newCellViewInfo = [];
-        console.log(changeModels);
+        // console.log(changeModels);
         for(var i in changeModels){
             var model = changeModels[i];
             var viewInfo = this.findViewByModel(model);
             var view = null;
             // 如果cell不存在 生成新
             if(!viewInfo){
-                console.log("执行了创建cell")
+                console.log("执行了创建cell");
+                // 分数统计
+                this._scoreC+=10
+                this.score.string=this._scoreC;
+                console.log(this.score.string);
                 var type = model.type;
                 var aniView = cc.instantiate(this.animalPrefab[type]);
-                aniView.parent = this.node;
+                // aniView.parent = this.node;
+                this.node.addChild(aniView);
                 var cellViewScript = aniView.getComponent("CellView");
                 cellViewScript.initWithCellModel(model);
                 view = aniView;

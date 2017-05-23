@@ -8,6 +8,7 @@ export default class loadGridView{
         //默认获得
         this.cellTypenum=5;
         this.startPos=cc.p(-1, -1);
+        this.score=0;
     }
     // 随机生成不同类型的cell
     // init初始化网格
@@ -122,14 +123,15 @@ export default class loadGridView{
             }
         }
     }
+    // 销毁过程
     processCrush(checkPoint){
-        let cycleCount = 0;
+        let cycleCount = 0;//循环次数
         while(checkPoint.length > 0){
         let bombModels = [];
         if(cycleCount == 0 && checkPoint.length == 2){ //特殊消除
             let pos1= checkPoint[0];
             let pos2 = checkPoint[1];
-            console.log(pos1,pos2);
+            // console.log(pos1,pos2);
             let model1 = this.cells[pos1.y][pos1.x];
             let model2 = this.cells[pos2.y][pos2.x];
             if(model1.status == CELL_STATUS.BIRD || model2.status ==  CELL_STATUS.BIRD){
@@ -148,7 +150,7 @@ export default class loadGridView{
         // console.log(checkPoint);
         for(var i in checkPoint){
             var pos = checkPoint[i];
-            console.log(pos.y,pos.x);
+            // console.log(pos.y,pos.x);
             if(!this.cells[pos.y][pos.x]){
                 continue;
             }
@@ -162,19 +164,25 @@ export default class loadGridView{
             }
             for(var j in result){
                 var model = this.cells[result[j].y][result[j].x];
+                // 将该cell设为空
                 this.crushCell(result[j].x, result[j].y);
+
                 if(model.status != CELL_STATUS.COMMON){
                     bombModels.push(model);
                 }
             }
+            // console.log(newCellType);
             this.createNewCell(pos, newCellStatus, newCellType);   
 
         }
+        // console.log(bombModels);
+        
         this.processBomb(bombModels);
         this.curTime += ANITIME.DIE;
-        checkPoint = this.down();
+        checkPoint = this.down();//newCheckPoint数组
         cycleCount++;
     }
+
 }
     down(){
         let newCheckPoint = [];
@@ -183,7 +191,11 @@ export default class loadGridView{
                 if(this.cells[i][j] == null){
                     var curRow = i;
                     for(var k = curRow; k<=GRID_HEIGHT;k++){
+                        // 如果该cell存在则将该cell赋值给上一个cell为null的
+                        // 将当前cell掷为空
+                        // 并将行+1;
                         if(this.cells[k][j]){
+                            // 将当
                             this.pushToChangeModels(this.cells[k][j]);
                             newCheckPoint.push(this.cells[k][j]);
                             this.cells[curRow][j] = this.cells[k][j];
@@ -194,6 +206,7 @@ export default class loadGridView{
                         }
                     }
                     var count = 1;
+                    // console.log(curRow);
                     for(var k = curRow; k<=GRID_HEIGHT; k++){
                         this.cells[k][j] = new CellModel();
                         this.cells[k][j].init(this.getSingleCellType());
@@ -211,7 +224,8 @@ export default class loadGridView{
         this.curTime += ANITIME.TOUCH_MOVE + 0.3
         return newCheckPoint;
     }
-    createNewCell(){
+    createNewCell(pos,status,type){
+        // console.log(type)
             if(status == ""){
                 return ;
             }
@@ -227,6 +241,7 @@ export default class loadGridView{
             model.setVisible(0, false);
             model.setVisible(this.curTime, true);
             this.changeModels.push(model);
+
 
     }
     processBomb(bombModels){
@@ -308,15 +323,32 @@ export default class loadGridView{
             else{
                 model.toDie(this.curTime);
             }
+            //  消除效果
             this.addCrushEffect(this.curTime, cc.p(model.x, model.y));
             this.cells[y][x] = null;
     }
+    // 添加碰撞(挤压)效果
     addCrushEffect(playTime, pos){
         this.effectsQueue.push({
             playTime: playTime,
             pos: pos,
             action: "crush"
         });
+    }
+    // 行boom
+    addRowBomb(playTime, pos){
+        this.effectsQueue.push({
+        playTime: playTime,
+        pos: pos,
+        action: "rowBomb"
+     }); 
+    }
+    addColBomb(playTime, pos){
+            this.effectsQueue.push({
+            playTime: playTime,
+            pos: pos,
+            action: "colBomb"
+        });  
     }
 
      checkAround(x,y){
@@ -381,6 +413,7 @@ export default class loadGridView{
             }
                 if(resultRow.length >= 3){
                     result = resultRow;
+
                 }
                 if(resultCol.length >= 3){
                     let tmp = result.concat();
@@ -433,6 +466,9 @@ export default class loadGridView{
     }
     getCells(){
         return this.cells;
+    }
+    getScore(){
+        return this.score;
     }
 
 }
